@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':multi-window-example', ':native-gesture-handler'
 
 include 'gesture-handler'
 project(':gesture-handler').projectDir = new File(rootProject.projectDir, '../android/lib')

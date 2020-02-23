@@ -2,8 +2,7 @@ package com.swmansion.gesturehandler.example;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,11 +17,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.swmansion.gesturehandler.DragDropGestureHandler;
 import com.swmansion.gesturehandler.DragGestureHandler;
-import com.swmansion.gesturehandler.DragGestureUtils;
 import com.swmansion.gesturehandler.DropGestureHandler;
 import com.swmansion.gesturehandler.GestureHandler;
 import com.swmansion.gesturehandler.GestureHandlerInteractionManager;
@@ -38,11 +33,13 @@ import com.swmansion.gesturehandler.PointerEventsConfig;
 import com.swmansion.gesturehandler.RotationGestureHandler;
 import com.swmansion.gesturehandler.TapGestureHandler;
 import com.swmansion.gesturehandler.ViewConfigurationHelper;
+import com.swmansion.gesturehandler.example.dragdrop.DragDropUtil;
+import com.swmansion.gesturehandler.example.dragdrop.GHRootView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.swmansion.gesturehandler.GestureHandler.STATE_END;
+import static com.swmansion.gesturehandler.example.dragdrop.DragDropUtil.isFinished;
 
 public class MainActivity extends Activity {
 
@@ -90,106 +87,6 @@ public class MainActivity extends Activity {
                         // Hide the nav bar and status bar
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
-
-    private static boolean isFinished(int state) {
-        return state == GestureHandler.STATE_CANCELLED || state == GestureHandler.STATE_FAILED
-                || state == GestureHandler.STATE_END;
-    }
-
-    private static class DragDropEventListener<O extends Object,T extends DragDropGestureHandler<O, T>> implements OnTouchEventListener<T> {
-
-        private HashMap<Integer, Integer> actionToColor = new HashMap<>();
-        private HashMap<Object, Integer> stateToColor = new HashMap<>();
-        private Integer bgc = null;
-        private Integer currentBgc = null;
-
-        DragDropEventListener<O, T> setColorForAction(int action, int color) {
-            actionToColor.put(action, color);
-            return this;
-        }
-
-        DragDropEventListener<O, T> setColorForState(int state, int color) {
-            stateToColor.put(state, color);
-            return this;
-        }
-
-        DragDropEventListener<O, T> setColorForState(int state, int oldState, int color) {
-            stateToColor.put(state + "," + oldState, color);
-            return this;
-        }
-
-        private void setBackgroundColor(View view, int color) {
-            if (bgc == null) {
-                Drawable background = view.getBackground();
-                if (background instanceof ColorDrawable) {
-                    bgc = ((ColorDrawable) background).getColor();
-                }
-            }
-            view.setBackgroundColor(color);
-            view.invalidate();
-            currentBgc = color;
-        }
-
-        @Override
-        public void onTouchEvent(T handler, MotionEvent event) {
-
-        }
-
-        @Override
-        public void onDragEvent(T handler, DragEvent event) {
-            String data = handler.getData() != null ? marshall((String[]) handler.getData()) : "";
-            Log.d("Drag", "action " + event.getAction() + ", " + handler + ", " + data);
-            int action = event.getAction();
-            if (actionToColor.containsKey(action)) {
-                setBackgroundColor(handler.getView(), actionToColor.get(action));
-            }
-        }
-
-        @Override
-        public void onStateChange(T handler, int newState, int oldState) {
-            Log.d("Drag", "state " + GestureHandler.stateToString(newState) + " " + handler);
-            Integer color = stateToColor.containsKey(newState + ',' + oldState) ?
-                    stateToColor.get(newState + ',' + oldState) :
-                    stateToColor.containsKey(newState) ?
-                            stateToColor.get(newState) :
-                            null;
-            if (color != null) {
-                setBackgroundColor(handler.getView(), color);
-            }
-        }
-    }
-
-    private static String marshall(@NonNull String[] data) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < data.length; i++) {
-            builder.append(data[i]);
-            builder.append(",");
-        }
-        return builder.toString();
-    }
-
-    private class DataResolverStringImpl implements DragGestureUtils.DataResolver<String[]> {
-        @Override
-        public String[] parse(String source) {
-            return source.split(",");
-        }
-
-        @Override
-        public String[] data() {
-            return new String[]{"a","b","c"};
-        }
-
-        @NonNull
-        @Override
-        public String stringify() {
-            return marshall(data());
-        }
-
-        @Override
-        public Activity getActivity() {
-            return MainActivity.this;
-        }
     }
 
     @Override
@@ -260,9 +157,7 @@ public class MainActivity extends Activity {
                             largeBlock.setTranslationX(0);
                             largeBlock.setTranslationY(0);
                         }
-
                     }
-
                 });
 
         GestureHandler rotationHandler = new RotationGestureHandler()
@@ -355,6 +250,10 @@ public class MainActivity extends Activity {
                     public void onStateChange(TapGestureHandler handler, int newState, int oldState) {
                         if (newState == GestureHandler.STATE_ACTIVE) {
                             Toast.makeText(MainActivity.this, "I'm tapped once", Toast.LENGTH_SHORT).show();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                MainActivity.this.enterPictureInPictureMode();
+                                //MainActivity.this.multi
+                            }
                         }
                     }
                 });
@@ -383,8 +282,8 @@ public class MainActivity extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         final int height = displayMetrics.heightPixels;
 
-        final DragDropEventListener<String[], DragGestureHandler<String[]>> dragEventListener =
-                new DragDropEventListener<String[], DragGestureHandler<String[]>>() {
+        final DragDropUtil.DragDropEventListener<String[], DragGestureHandler<String[]>> dragEventListener =
+                new DragDropUtil.DragDropEventListener<String[], DragGestureHandler<String[]>>() {
                     private float dy, y = 0;
                     @Override
                     public void onDragEvent(DragGestureHandler<String[]> handler, DragEvent event) {
@@ -428,7 +327,7 @@ public class MainActivity extends Activity {
 
         final DragGestureHandler<String[]> dragHandler = new DragGestureHandler<String[]>(this)
                 .setTypes(dragTypes)
-                .setDataResolver(new DataResolverStringImpl())
+                .setDataResolver(new DragDropUtil.DataResolverStringImpl(this))
                 .setOnTouchEventListener(dragEventListener);
 
         // Native click events should work as expected assuming the view is wrapped with
@@ -461,8 +360,8 @@ public class MainActivity extends Activity {
         });
 
         DropGestureHandler sDropHandler = new DropGestureHandler<String[]>(this)
-                .setDataResolver(new DataResolverStringImpl())
-                .setOnTouchEventListener(new DragDropEventListener<String[], DropGestureHandler<String[]>>());
+                .setDataResolver(new DragDropUtil.DataResolverStringImpl(this))
+                .setOnTouchEventListener(new DragDropUtil.DragDropEventListener<String[], DropGestureHandler<String[]>>());
         //
         registry.registerHandlerForView(scrollView, scrollHandler)
         .setOnTouchEventListener(new OnTouchEventListenerImpl<NativeViewGestureHandler>() {
@@ -480,7 +379,7 @@ public class MainActivity extends Activity {
         registry.registerHandlerForView(button, new NativeViewGestureHandler())
                 .setShouldActivateOnStart(true);
         registry.registerHandlerForView(button, new DropGestureHandler<>(this)
-                .setOnTouchEventListener(new DragDropEventListener<Object, DropGestureHandler<Object>>()));
+                .setOnTouchEventListener(new DragDropUtil.DragDropEventListener<Object, DropGestureHandler<Object>>()));
         registry.registerHandlerForView(seekBar, new NativeViewGestureHandler())
                 .setDisallowInterruption(true)
                 .setShouldActivateOnStart(true)
@@ -498,7 +397,7 @@ public class MainActivity extends Activity {
                 .setEnabled(false)
                 .setTypes(dragTypes)
                 .setOnTouchEventListener(
-                        new DragDropEventListener<Object, DropGestureHandler<Object>>()
+                        new DragDropUtil.DragDropEventListener<Object, DropGestureHandler<Object>>()
                                 .setColorForState(GestureHandler.STATE_ACTIVE, Color.GREEN)
                                 .setColorForAction(DragEvent.ACTION_DRAG_EXITED, Color.RED)
                                 .setColorForAction(DragEvent.ACTION_DROP, Color.BLUE)
@@ -507,7 +406,7 @@ public class MainActivity extends Activity {
         registry.registerHandlerForView(blockChild, new DropGestureHandler<>(this))
                 .setTypes(dragTypes)
                 .setOnTouchEventListener(
-                        new DragDropEventListener<Object, DropGestureHandler<Object>>()
+                        new DragDropUtil.DragDropEventListener<Object, DropGestureHandler<Object>>()
                                 .setColorForState(GestureHandler.STATE_ACTIVE, Color.GREEN)
                                 .setColorForAction(DragEvent.ACTION_DRAG_EXITED, Color.RED)
                                 .setColorForAction(DragEvent.ACTION_DROP, Color.BLUE)
@@ -516,7 +415,7 @@ public class MainActivity extends Activity {
         registry.registerHandlerForView(blockChild2, new DropGestureHandler<>(this))
                 .setTypes(dragTypes)
                 .setOnTouchEventListener(
-                        new DragDropEventListener<Object, DropGestureHandler<Object>>() {
+                        new DragDropUtil.DragDropEventListener<Object, DropGestureHandler<Object>>() {
                             @Override
                             public void onStateChange(DropGestureHandler<Object> handler, int newState, int oldState) {
                                 super.onStateChange(handler, newState, oldState);
@@ -533,7 +432,7 @@ public class MainActivity extends Activity {
         registry.registerHandlerForView(largeBlock, new DropGestureHandler<>(this))
                 .setTypes(dragTypes)
                 .setOnTouchEventListener(
-                        new DragDropEventListener<Object, DropGestureHandler<Object>>()
+                        new DragDropUtil.DragDropEventListener<Object, DropGestureHandler<Object>>()
                                 .setColorForState(GestureHandler.STATE_ACTIVE, Color.YELLOW)
                                 .setColorForAction(DragEvent.ACTION_DRAG_EXITED, Color.BLACK)
                                 //.setColorForAction(DragEvent.ACTION_DROP, Color.CYAN)
