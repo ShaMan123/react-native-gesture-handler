@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AndroidMultiWindowNativeExample</string>
+    <string name="app_title">Gesture Handler Drag and Drop</string>
+</resources>
