@@ -13,6 +13,7 @@
 #import "RNRootViewGestureRecognizer.h"
 
 #import "Handlers/RNPanHandler.h"
+#import "Handlers/RNDragHandler.h"
 #import "Handlers/RNTapHandler.h"
 #import "Handlers/RNFlingHandler.h"
 #import "Handlers/RNLongPressHandler.h"
@@ -58,6 +59,8 @@
     dispatch_once(&mapToken, ^{
         map = @{
                 @"PanGestureHandler" : [RNPanGestureHandler class],
+                @"DragGestureHandler" : [RNDragGestureHandler class],
+                @"DropGestureHandler" : [RNPanGestureHandler class],
                 @"TapGestureHandler" : [RNTapGestureHandler class],
                 @"FlingGestureHandler" : [RNFlingGestureHandler class],
                 @"LongPressGestureHandler": [RNLongPressGestureHandler class],

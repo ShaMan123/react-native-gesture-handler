@@ -10,29 +10,8 @@
 
 #import <UIKit/UIGestureRecognizerSubclass.h>
 
-@interface RNBetterPanGestureRecognizer : UIPanGestureRecognizer
-
-@property (nonatomic) CGFloat minDistSq;
-@property (nonatomic) CGFloat minVelocityX;
-@property (nonatomic) CGFloat minVelocityY;
-@property (nonatomic) CGFloat minVelocitySq;
-@property (nonatomic) CGFloat activeOffsetXStart;
-@property (nonatomic) CGFloat activeOffsetXEnd;
-@property (nonatomic) CGFloat failOffsetXStart;
-@property (nonatomic) CGFloat failOffsetXEnd;
-@property (nonatomic) CGFloat activeOffsetYStart;
-@property (nonatomic) CGFloat activeOffsetYEnd;
-@property (nonatomic) CGFloat failOffsetYStart;
-@property (nonatomic) CGFloat failOffsetYEnd;
-
-
-- (id)initWithGestureHandler:(RNGestureHandler*)gestureHandler;
-
-@end
-
-
 @implementation RNBetterPanGestureRecognizer {
-  __weak RNGestureHandler *_gestureHandler;
+  //__weak RNGestureHandler *_gestureHandler;
   NSUInteger _realMinimumNumberOfTouches;
   BOOL _hasCustomActivationCriteria;
 }

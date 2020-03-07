@@ -9,6 +9,7 @@
 
 #import "RNGestureHandlerState.h"
 #import "RNGestureHandlerDirection.h"
+#import "RNGestureHandlerDragState.h"
 #import "RNGestureHandler.h"
 #import "RNGestureHandlerManager.h"
 
@@ -191,7 +192,19 @@ RCT_EXPORT_METHOD(handleClearJSResponder)
                       @"LEFT": @(RNGestureHandlerDirectionLeft),
                       @"UP": @(RNGestureHandlerDirectionUp),
                       @"DOWN": @(RNGestureHandlerDirectionDown)
-                      }
+                      },
+              @"DragState": @{
+                      @"BEGAN": @(RNGestureHandlerDragStateBegan),
+                      @"ACTIVE": @(RNGestureHandlerDragStateActive),
+                      @"DROP": @(RNGestureHandlerDragStateDrop),
+                      @"END": @(RNGestureHandlerDragStateEnd),
+                      @"ENTERED": @(RNGestureHandlerDragStateEnter),
+                      @"EXITED": @(RNGestureHandlerDragStateExit),
+                      },
+              @"DragMode": @{
+                      @"MOVE": @(RNGestureHandlerDragModeMove),
+                      @"COPY": @(RNGestureHandlerDragModeCopy)
+                      },
               };
 }
 

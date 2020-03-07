@@ -122,8 +122,16 @@ class MainScreenItem extends React.Component {
   render() {
     const { key } = this.props.item;
     return (
+<<<<<<< Updated upstream
       <RectButton style={styles.button} onPress={this._onPress}>
         <Text style={styles.buttonText}>{SCREENS[key].title || key}</Text>
+=======
+      <RectButton
+        //pointerEvents={isDisabled ? 'none' : 'auto'}
+        style={[styles.button, isDisabled && { opacity: 0.5 }]}
+        onPress={this._onPress}>
+        <Text style={styles.buttonText}>{title}</Text>
+>>>>>>> Stashed changes
       </RectButton>
     );
   }
