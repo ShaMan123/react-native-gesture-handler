@@ -223,13 +223,9 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/jscallinvoker (= 0.61.2)
-<<<<<<< Updated upstream
   - RNCViewpager (1.1.6):
     - React
-  - RNGestureHandler (1.5.2):
-=======
   - RNGestureHandler (1.6.0):
->>>>>>> Stashed changes
     - React
   - RNVectorIcons (5.0.0):
     - React
@@ -365,12 +361,8 @@ SPEC CHECKSUMS:
   React-RCTText: e3ef6191cdb627855ff7fe8fa0c1e14094967fb8
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
-<<<<<<< Updated upstream
   RNCViewpager: cb80bdd78432921ec6c5309e0e1122fa8727a416
   RNGestureHandler: 946a7691e41df61e2c4b1884deab41a4cdc3afff
-=======
-  RNGestureHandler: dde546180bf24af0b5f737c8ad04b6f3fa51609a
->>>>>>> Stashed changes
   RNVectorIcons: f066f73bf4f25564d7ee7b1bb150e3b431f3a194
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
