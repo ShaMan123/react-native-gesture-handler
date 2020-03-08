@@ -44,15 +44,15 @@ class ForceTouchFallback extends React.Component {
 export const ForceTouchGestureHandler =
   PlatformConstants && PlatformConstants.forceTouchAvailable
     ? createHandler(
-        'ForceTouchGestureHandler',
-        {
-          ...GestureHandlerPropTypes,
-          minForce: PropTypes.number,
-          maxForce: PropTypes.number,
-          feedbackOnActivation: PropTypes.bool,
-        },
-        {}
-      )
+      'ForceTouchGestureHandler',
+      {
+        ...GestureHandlerPropTypes,
+        minForce: PropTypes.number,
+        maxForce: PropTypes.number,
+        feedbackOnActivation: PropTypes.bool,
+      },
+      {}
+    )
     : ForceTouchFallback;
 
 ForceTouchGestureHandler.forceTouchAvailable =
@@ -278,8 +278,6 @@ export const RotationGestureHandler = createHandler(
   GestureHandlerPropTypes,
   {}
 );
-<<<<<<< Updated upstream
-=======
 
 const DragGestureHandlerBase = createHandler(
   'DragGestureHandler',
@@ -387,8 +385,9 @@ function DragGestureHandlerWrapper(props, ref) {
 }
 export const DragGestureHandler = React.forwardRef(DragGestureHandlerWrapper);
 DragGestureHandler.propTypes = DragGestureHandlerBase.propTypes;
-export const DropGestureHandler = View;
-export const DropGestureHandler1 = createHandler(
+
+//export const DropGestureHandler = View;
+export const DropGestureHandler = createHandler(
   'DropGestureHandler',
   {
     ...GestureHandlerPropTypes,
@@ -404,4 +403,3 @@ export const DropGestureHandler1 = createHandler(
     types: true
   }
 );
->>>>>>> Stashed changes
